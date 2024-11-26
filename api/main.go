@@ -45,8 +45,8 @@ func init() {
 
 	// Configure OAuth2
 	conf := &oauth2.Config{
-		ClientID:     os.Getenv("CLIENT_ID"),
-		ClientSecret: os.Getenv("CLIENT_SECRET"),
+		ClientID:     os.Getenv("VERCEL_CLIENT_ID"),
+		ClientSecret: os.Getenv("VERCEL_CLIENT_SECRET"),
 		RedirectURL:  "http://localhost:8000/auth/callback",
 		Scopes:       []string{"email", "profile"},
 		Endpoint:     google.Endpoint,
