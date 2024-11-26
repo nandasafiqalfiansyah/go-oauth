@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        img {
+            border-radius: 50%;
+            max-width: 100px;
+            margin-top: 10px;
+        }
+        .json-box {
+            background: #f4f4f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, {{.Name}}!</h2>
+        <p><strong>Email:</strong> {{.Email}}</p>
+        <p><strong>Profile Picture:</strong></p>
+
+        <img src="{{.Picture}}" alt="Profile Picture">
+        
+        <h2>Your Data</h2>
+        <div class="json-box">
+            <pre>{{.}}</pre>
+        </div>
+        <br>
+        <a href="/">Logout</a>
+    </div>
+</body>
+</html>
