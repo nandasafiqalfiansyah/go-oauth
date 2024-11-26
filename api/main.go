@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"text/template"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -28,11 +28,8 @@ type UserInfo struct {
     Locale        string `json:"locale"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "<h1>You SUCCESS DEPLOY GOLANG page 1</h1>")
-}
-
 func main() {
+    r := gin.New()
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -44,17 +41,25 @@ func main() {
 		Scopes:       []string{"email", "profile"},
 		Endpoint:     google.Endpoint,
 	}
-
 	app := App{config: conf}
-	mux := http.NewServeMux()
+	r.GET("/", func(c *gin.Context) {
+		app.loginHandler(c.Writer, c.Request)
+	})
 
-	mux.HandleFunc("/", app.loginHandler)
-	mux.HandleFunc("/auth/oauth", app.oauthHandler)
-	mux.HandleFunc("/auth/callback", app.callbackHandler)
-	http.ListenAndServe(":8000", mux)
+	r.GET("/auth/oauth", func(c *gin.Context) {
+		app.oauthHandler(c.Writer, c.Request)
+	})
+	r.GET("/auth/callback", func(c *gin.Context) {
+		app.callbackHandler(c.Writer, c.Request)
+
+	})
+	// r.Run(":8000")
+}// login 
+
+func Handler(w http.ResponseWriter, r *http.Request) {
+	gin.Default().ServeHTTP(w, r)
 }
 
-// login 
 func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
