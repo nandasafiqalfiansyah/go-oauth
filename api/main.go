@@ -27,9 +27,12 @@ type UserInfo struct {
     Picture       string `json:"picture"`
     Locale        string `json:"locale"`
 }
+var (
+	router *gin.Engine
+)
 
-func main() {
-    r := gin.New()
+func init() {
+    router := gin.New()
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -42,14 +45,14 @@ func main() {
 		Endpoint:     google.Endpoint,
 	}
 	app := App{config: conf}
-	r.GET("/", func(c *gin.Context) {
+	router.GET("/", func(c *gin.Context) {
 		app.loginHandler(c.Writer, c.Request)
 	})
 
-	r.GET("/auth/oauth", func(c *gin.Context) {
+	router.GET("/auth/oauth", func(c *gin.Context) {
 		app.oauthHandler(c.Writer, c.Request)
 	})
-	r.GET("/auth/callback", func(c *gin.Context) {
+	router.GET("/auth/callback", func(c *gin.Context) {
 		app.callbackHandler(c.Writer, c.Request)
 
 	})
@@ -57,7 +60,7 @@ func main() {
 }// login 
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	gin.Default().ServeHTTP(w, r)
+	router.ServeHTTP(w, r)
 }
 
 func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
