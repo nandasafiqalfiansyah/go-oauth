@@ -1,12 +1,13 @@
 package api
 
+// local package swich main
+
 import (
 	"context"
 	"encoding/json"
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -36,8 +37,9 @@ var (
 func init() {
 	// Initialize Gin router
 	router = gin.New()
+	router.Use(gin.Logger())
 
-	// Load environment variables
+	// env
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -45,20 +47,16 @@ func init() {
 
 	// Configure OAuth2
 	conf := &oauth2.Config{
-		ClientID:     os.Getenv("VERCEL_CLIENT_ID"),
-		ClientSecret: os.Getenv("VERCEL_CLIENT_SECRET"),
+		ClientID:     os.Getenv("CLIENT_ID"),
+		ClientSecret: os.Getenv("CLIENT_SECRET"),
 		RedirectURL:  "http://localhost:8000/auth/callback",
 		Scopes:       []string{"email", "profile"},
 		Endpoint:     google.Endpoint,
 	}
 
 	app := App{config: conf}
-
 	// Define routes
 	router.GET("/", func(c *gin.Context) {
-		app.loginHandler(c.Writer, c.Request)
-	})
-	router.GET("/auth/oauth", func(c *gin.Context) {
 		app.oauthHandler(c.Writer, c.Request)
 	})
 	router.GET("/auth/callback", func(c *gin.Context) {
@@ -66,14 +64,6 @@ func init() {
 	})
 }
 
-func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("templates/index.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	tmpl.Execute(w, nil)
-}
 
 func (a *App) oauthHandler(w http.ResponseWriter, r *http.Request) {
 	url := a.config.AuthCodeURL("state", oauth2.AccessTypeOffline)
@@ -108,15 +98,10 @@ func (a *App) callbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl, err := template.ParseFiles("templates/dashboard.html")
-	if err != nil {
-		http.Error(w, "Failed to load template: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	tmpl.Execute(w, userInfo)
+	json.NewEncoder(w).Encode(userInfo)
 }
 
+// local
 // func main() {
 // 	if err := router.Run(":8000"); err != nil {
 // 		log.Fatal("Failed to start server:", err)
