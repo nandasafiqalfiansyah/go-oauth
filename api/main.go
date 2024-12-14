@@ -1,12 +1,12 @@
 package api
 
-// local package swich main
-
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -35,17 +35,12 @@ var (
 )
 
 func init() {
-	// Initialize Gin router
 	router = gin.New()
 	router.Use(gin.Logger())
-
-	// env
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
-	// Configure OAuth2
 	conf := &oauth2.Config{
 		ClientID:     os.Getenv("CLIENT_ID"),
 		ClientSecret: os.Getenv("CLIENT_SECRET"),
@@ -53,55 +48,77 @@ func init() {
 		Scopes:       []string{"email", "profile"},
 		Endpoint:     google.Endpoint,
 	}
-
 	app := App{config: conf}
-	// Define routes
+	router.GET("/auth", app.oauthHandler)
+	router.GET("/auth/callback", app.callbackHandler)
 	router.GET("/", func(c *gin.Context) {
-		app.oauthHandler(c.Writer, c.Request)
+		c.JSON(http.StatusOK, gin.H{
+			"code":    200,
+			"message": "server is running",
+		})
 	})
-	router.GET("/auth/callback", func(c *gin.Context) {
-		app.callbackHandler(c.Writer, c.Request)
-	})
-}
+}	
 
-
-func (a *App) oauthHandler(w http.ResponseWriter, r *http.Request) {
-	url := a.config.AuthCodeURL("state", oauth2.AccessTypeOffline)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-}
-
-func (a *App) callbackHandler(w http.ResponseWriter, r *http.Request) {
-	code := r.URL.Query().Get("code")
-	if code == "" {
-		http.Error(w, "Authorization code not found", http.StatusBadRequest)
+func (a *App) oauthHandler(c *gin.Context) {
+	urlFe := c.Query("url")
+	if urlFe == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing URL parameter"})
 		return
 	}
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:  "urlFe",
+		Value: urlFe,
+		Path:  "/",
+		HttpOnly: true,
+	})
+	url := a.config.AuthCodeURL("state", oauth2.AccessTypeOffline)
+	c.Redirect(http.StatusTemporaryRedirect, url)
+}
 
+func (a *App) callbackHandler(c *gin.Context) {
+	code := c.Query("code")
+	if code == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Authorization code not found"})
+		return
+	}
 	t, err := a.config.Exchange(context.Background(), code)
 	if err != nil {
-		http.Error(w, "Failed to exchange token: "+err.Error(), http.StatusBadRequest)
+		log.Println("Error exchanging token:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to exchange token"})
 		return
 	}
-
 	client := a.config.Client(context.Background(), t)
 	resp, err := client.Get("https://openidconnect.googleapis.com/v1/userinfo")
 	if err != nil {
-		http.Error(w, "Failed to fetch user info: "+err.Error(), http.StatusBadRequest)
+		log.Println("Error fetching user info:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to fetch user info"})
 		return
 	}
 	defer resp.Body.Close()
-
 	var userInfo UserInfo
 	err = json.NewDecoder(resp.Body).Decode(&userInfo)
 	if err != nil {
-		http.Error(w, "Failed to decode user info: "+err.Error(), http.StatusInternalServerError)
+		log.Println("Error decoding user info:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode user info"})
 		return
 	}
-
-	json.NewEncoder(w).Encode(userInfo)
+	cookie, err := c.Request.Cookie("urlFe")
+	if err != nil {
+		log.Println("Error retrieving urlFe from cookie:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "URL not found in session"})
+		return
+	}
+	userData, err := json.Marshal(userInfo)
+	if err != nil {
+		log.Println("Error encoding user info:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store user info"})
+		return
+	}
+	redirectURL := fmt.Sprintf("%s?user=%s", cookie.Value, url.QueryEscape(string(userData)))
+	c.Redirect(http.StatusTemporaryRedirect, redirectURL)
 }
 
-// local
+
 // func main() {
 // 	if err := router.Run(":8000"); err != nil {
 // 		log.Fatal("Failed to start server:", err)

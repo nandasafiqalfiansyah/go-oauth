@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth2 Google Login</title>
+  </head>
+  <body>
+    <h1>Login dengan Google</h1>
+
+    <!-- Tombol login -->
+    <button id="loginButton">Login with Google</button>
+
+    <h2>Informasi User</h2>
+    <div id="userInfo"></div>
+
+    <script>
+      const loginButton = document.getElementById("loginButton");
+
+      // Aksi saat tombol "Login with Google" diklik
+      loginButton.addEventListener("click", () => {
+        const redirectUrl = encodeURIComponent(window.location.origin);
+        window.location.href = `https://go-oauth.vercel.app/auth/?url=${redirectUrl}`;
+      });
+
+      // Fungsi untuk mengambil query parameter dari URL
+      function getQueryParam(param) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+      }
+
+      // Cek apakah URL memiliki parameter "user"
+      const userData = getQueryParam("user");
+      if (userData) {
+        try {
+          // Simpan data user di Local Storage
+          localStorage.setItem("userData", decodeURIComponent(userData));
+
+          // Hapus query parameter dari URL
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        } catch (error) {
+          console.error("Error parsing user info:", error);
+        }
+      }
+
+      // Ambil data user dari Local Storage dan tampilkan di halaman
+      const savedUserData = localStorage.getItem("userData");
+      if (savedUserData) {
+        const userInfo = JSON.parse(savedUserData);
+        document.getElementById("userInfo").innerHTML = `
+          <p><strong>Nama:</strong> ${userInfo.name}</p>
+          <p><strong>Email:</strong> ${userInfo.email}</p>
+          <img src="${userInfo.picture}" alt="Profile Picture" style="border-radius: 50%; width: 100px;">
+        `;
+      }
+    </script>
+  </body>
+</html>
