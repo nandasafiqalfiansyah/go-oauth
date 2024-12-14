@@ -9,18 +9,12 @@
     <h1>Login dengan Google</h1>
 
     <!-- Tombol login -->
-    <button id="loginButton">Login with Google</button>
+    <button href="https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/">Login with Google</button>
 
     <h2>Informasi User</h2>
     <div id="userInfo"></div>
 
     <script>
-      const loginButton = document.getElementById("loginButton");
-
-      // Aksi saat tombol "Login with Google" diklik
-      loginButton.addEventListener("click", () => 
-        window.location.href = `https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/`;
-      });
 
       // Fungsi untuk mengambil query parameter dari URL
       function getQueryParam(param) {
