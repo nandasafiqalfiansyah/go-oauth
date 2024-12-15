@@ -9,93 +9,96 @@
   </head>
   <body class="bg-base-200 text-base-content">
     <div class="container mx-auto p-10">
+      <nav class="mb-10">
+        <ul class="flex justify-center space-x-4">
+          <li><a href="/" class="btn btn-primary">Home</a></li>
+          <li><a href="/documentation" class="btn btn-secondary">Documentation</a></li>
+        </ul>
+      </nav>
+      
       <h1 class="text-4xl font-bold text-center mb-10">OAuth2 Google Login - Documentation</h1>
       
       <section class="mb-10">
         <h2 class="text-2xl font-semibold mb-4">1. Introduction</h2>
-        <p class="mb-4">This document provides an overview of how to implement an OAuth2 login using Google. The page allows users to log in with their Google accounts, view their user information, and log out securely.</p>
+        <p>This page provides a working implementation of Google OAuth2 login, logout, and user information display. You can log in using your Google account, view user information, and log out securely.</p>
       </section>
       
       <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">2. Features</h2>
-        <ul class="list-disc list-inside">
-          <li>Google OAuth2 Login</li>
-          <li>User Information Display (Name, Email, Profile Picture)</li>
-          <li>Logout Functionality</li>
-        </ul>
+        <h2 class="text-2xl font-semibold mb-4">2. Try it Out</h2>
+        <a href="https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/" class="btn btn-primary">Login with Google</a>
+        <div id="userInfo" class="mt-4"></div>
+        <button id="logoutBtn" class="btn btn-secondary mt-4 hidden">Logout</button>
       </section>
-      
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">3. Code Overview</h2>
-        <p class="mb-4">Here is a summary of the key parts of the code:</p>
-        <ul class="list-decimal list-inside">
-          <li><strong>Login Button</strong>: Redirects to the Google OAuth authentication page.</li>
-          <li><strong>Query Parameter Handling</strong>: Extracts user data from the URL after login.</li>
-          <li><strong>LocalStorage</strong>: Saves user data for future sessions.</li>
-          <li><strong>Logout Button</strong>: Clears the user data from LocalStorage and reloads the page.</li>
-        </ul>
-      </section>
-      
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">4. User Interface</h2>
-        <p>The interface includes the following elements styled with Tailwind CSS and DaisyUI components:</p>
-        <ul class="list-disc list-inside">
-          <li>Login Button (styled as DaisyUI primary button)</li>
-          <li>User Information Card (name, email, profile picture)</li>
-          <li>Logout Button (styled as DaisyUI secondary button)</li>
-        </ul>
-      </section>
-      
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">5. How to Use</h2>
-        <ol class="list-decimal list-inside">
-          <li>Click the <strong>Login with Google</strong> button.</li>
-          <li>Authorize the app to access your Google account.</li>
-          <li>View your user details displayed on the page.</li>
-          <li>Click the <strong>Logout</strong> button to clear your session and reload the page.</li>
-        </ol>
-      </section>
-      
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">6. Technical Notes</h2>
-        <p>Below are some important notes to keep in mind:</p>
-        <ul class="list-disc list-inside">
-          <li>Ensure the Google OAuth credentials are properly configured.</li>
-          <li>Use HTTPS in production to avoid issues with OAuth redirection.</li>
-          <li>Consider using session storage instead of local storage for better security in production.</li>
-        </ul>
-      </section>
-      
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">7. Security</h2>
-        <p>For improved security, consider the following measures:</p>
-        <ul class="list-disc list-inside">
-          <li>Use HTTPS to prevent interception of sensitive data.</li>
-          <li>Limit the scope of access requested from Google (e.g., only request profile and email).</li>
-          <li>Use secure cookies instead of localStorage for sensitive information.</li>
-        </ul>
-      </section>
-      
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">8. Sample Code</h2>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>
-// Extract user data from URL and store in localStorage
-const userData = new URLSearchParams(window.location.search).get('user');
-if (userData) {
-  localStorage.setItem('userData', decodeURIComponent(userData));
-}
 
-// Display user information on the page
-const savedUserData = localStorage.getItem('userData');
-if (savedUserData) {
-  const userInfo = JSON.parse(savedUserData);
-  document.getElementById("userInfo").innerHTML = `
-    <p><strong>Name:</strong> ${userInfo.name}</p>
-    <p><strong>Email:</strong> ${userInfo.email}</p>
-    <img src="${userInfo.picture}" alt="Profile Picture">
-  `;
-}
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">3. Code Examples</h2>
+        
+        <h3 class="text-xl font-bold mt-4">HTML, CSS, and JavaScript</h3>
+        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
+<code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Google Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;a href="https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/"&gt;Login with Google&lt;/a&gt;
+  &lt;div id="userInfo"&gt;&lt;/div&gt;
+  &lt;button id="logoutBtn"&gt;Logout&lt;/button&gt;
+  &lt;script&gt;
+    const userData = new URLSearchParams(window.location.search).get('user');
+    if (userData) {
+      localStorage.setItem('userData', decodeURIComponent(userData));
+      window.history.replaceState({}, document.title, window.location.origin + window.location.pathname);
+    }
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      const userInfo = JSON.parse(savedUserData);
+      document.getElementById("userInfo").innerHTML = `
+        &lt;p&gt;&lt;strong&gt;Name:&lt;/strong&gt; ${userInfo.name}&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;Email:&lt;/strong&gt; ${userInfo.email}&lt;/p&gt;
+        &lt;img src="${userInfo.picture}" style="border-radius: 50%; width: 100px;"&gt;
+      `;
+      document.getElementById("logoutBtn").style.display = "block";
+    }
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("userData");
+      window.location.reload();
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code>
+        </pre>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">4. API Usage</h2>
+        
+        <h3 class="text-xl font-bold">JavaScript Example</h3>
+        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
+<code>fetch('/auth/google')
+  .then(response => response.json())
+  .then(data => console.log(data));</code>
+        </pre>
+        
+        <h3 class="text-xl font-bold">Node.js Example</h3>
+        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
+<code>const express = require('express');
+const app = express();
+app.get('/auth/google', (req, res) => {
+  res.redirect('https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/');
+});</code>
+        </pre>
+        
+        <h3 class="text-xl font-bold">Python (Flask) Example</h3>
+        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
+<code>from flask import Flask, redirect
+app = Flask(__name__)
+
+@app.route('/auth/google')
+def google_login():
+    return redirect('https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/')
 </code>
         </pre>
       </section>
@@ -104,5 +107,39 @@ if (savedUserData) {
         <p>© 2024 OAuth2 Google Login Documentation</p>
       </footer>
     </div>
+    
+    <script>
+      function getQueryParam(param) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(param);
+      }
+
+      const userData = getQueryParam("user");
+      if (userData) {
+        try {
+          localStorage.setItem("userData", decodeURIComponent(userData));
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        } catch (error) {
+          console.error("Error parsing user info:", error);
+        }
+      }
+
+      const savedUserData = localStorage.getItem("userData");
+      if (savedUserData) {
+        const userInfo = JSON.parse(savedUserData);
+        document.getElementById("userInfo").innerHTML = `
+          <p><strong>Nama:</strong> ${userInfo.name}</p>
+          <p><strong>Email:</strong> ${userInfo.email}</p>
+          <img src="${userInfo.picture}" alt="Profile Picture" style="border-radius: 50%; width: 100px;">
+        `;
+        document.getElementById("logoutBtn").classList.remove("hidden");
+      }
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("userData");
+        window.location.reload();
+      });
+    </script>
   </body>
 </html>
