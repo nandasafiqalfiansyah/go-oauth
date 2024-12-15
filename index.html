@@ -9,7 +9,6 @@
   </head>
   <body class="bg-base-200 text-base-content">
     <div class="container mx-auto p-10">
-      
       <h1 class="text-4xl font-bold text-center mb-10">OAuth2 Google Login - Documentation</h1>
       
       <section class="mb-10">
@@ -37,122 +36,8 @@
         </ul>
       </section>
       
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">4. Code Examples</h2>
-
-        <h3 class="text-xl font-bold mt-4">HTML, CSS, and JavaScript</h3>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-  &lt;meta charset="UTF-8"&gt;
-  &lt;title&gt;Google Login&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  <!-- Tombol login Google -->
-  &lt;a href="https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}"&gt;Login with Google&lt;/a&gt;
-  <!-- Menampilkan informasi pengguna -->
-  &lt;div id="userInfo"&gt;&lt;/div&gt;
-  <!-- Tombol logout -->
-  &lt;button id="logoutBtn"&gt;Logout&lt;/button&gt;
-  &lt;script&gt;
-    // Mengambil data user dari URL dan menyimpannya ke localStorage
-    const userData = new URLSearchParams(window.location.search).get('user');
-    if (userData) {
-      localStorage.setItem('userData', decodeURIComponent(userData));
-      window.history.replaceState({}, document.title, window.location.origin + window.location.pathname);
-    }
-    
-    // Menampilkan informasi user yang tersimpan di localStorage
-    const savedUserData = localStorage.getItem('userData');
-    if (savedUserData) {
-      const userInfo = JSON.parse(savedUserData);
-      document.getElementById("userInfo").innerHTML = `
-        &lt;p&gt;&lt;strong&gt;Name:&lt;/strong&gt; ${userInfo.name}&lt;/p&gt;
-        &lt;p&gt;&lt;strong&gt;Email:&lt;/strong&gt; ${userInfo.email}&lt;/p&gt;
-        &lt;img src="${userInfo.picture}" style="border-radius: 50%; width: 100px;"&gt;
-      `;
-      document.getElementById("logoutBtn").style.display = "block";
-    }
-    
-    // Logout dan menghapus data user dari localStorage
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.removeItem("userData");
-      window.location.reload();
-    });
-  &lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code>
-        </pre>
-
-        <h3 class="text-xl font-bold">Node.js Example</h3>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>const express = require('express');
-const app = express();
-
-app.get('/auth/google', (req, res) => {
-  res.redirect('https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}');
-});</code>
-        </pre>
-
-        <h3 class="text-xl font-bold">PHP Example</h3>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>&lt;?php
-header('Location: https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}');
-exit();
-?></code>
-        </pre>
-
-        <h3 class="text-xl font-bold">Golang Example</h3>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>package main
-
-import (
-  "net/http"
-)
-
-func handler(w http.ResponseWriter, r *http.Request) {
-  http.Redirect(w, r, "https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}", http.StatusFound)
-}
-
-func main() {
-  http.HandleFunc("/auth/google", handler)
-  http.ListenAndServe(":8080", nil)
-}</code>
-        </pre>
-
-        <h3 class="text-xl font-bold">TypeScript Example</h3>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>import express from 'express';
-const app = express();
-
-app.get('/auth/google', (req, res) => {
-  res.redirect('https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}');
-});</code>
-        </pre>
-
-        <h3 class="text-xl font-bold">Ruby Example</h3>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>require 'sinatra'
-
-get '/auth/google' do
-  redirect 'https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}'
-end</code>
-        </pre>
-
-        <h3 class="text-xl font-bold">Python (Flask) Example</h3>
-        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
-<code>from flask import Flask, redirect
-app = Flask(__name__)
-
-@app.route('/auth/google')
-def google_login():
-    return redirect('https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}')</code>
-        </pre>
-      </section>
-      
       <footer class="mt-20 text-center">
-        <p>© 2024 OAuth2 Google Login Documentation</p>
+        <p>© 2024 OAuth2 Google Login Documentation by nanda safiq alfiansyah</p>
       </footer>
     </div>
     
