@@ -3,50 +3,106 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OAuth2 Google Login</title>
+    <title>OAuth2 Google Login - Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.33.1/dist/full.css" rel="stylesheet">
   </head>
-  <body>
-    <h1>Login dengan Google</h1>
+  <body class="bg-base-200 text-base-content">
+    <div class="container mx-auto p-10">
+      <h1 class="text-4xl font-bold text-center mb-10">OAuth2 Google Login - Documentation</h1>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">1. Introduction</h2>
+        <p class="mb-4">This document provides an overview of how to implement an OAuth2 login using Google. The page allows users to log in with their Google accounts, view their user information, and log out securely.</p>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">2. Features</h2>
+        <ul class="list-disc list-inside">
+          <li>Google OAuth2 Login</li>
+          <li>User Information Display (Name, Email, Profile Picture)</li>
+          <li>Logout Functionality</li>
+        </ul>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">3. Code Overview</h2>
+        <p class="mb-4">Here is a summary of the key parts of the code:</p>
+        <ul class="list-decimal list-inside">
+          <li><strong>Login Button</strong>: Redirects to the Google OAuth authentication page.</li>
+          <li><strong>Query Parameter Handling</strong>: Extracts user data from the URL after login.</li>
+          <li><strong>LocalStorage</strong>: Saves user data for future sessions.</li>
+          <li><strong>Logout Button</strong>: Clears the user data from LocalStorage and reloads the page.</li>
+        </ul>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">4. User Interface</h2>
+        <p>The interface includes the following elements styled with Tailwind CSS and DaisyUI components:</p>
+        <ul class="list-disc list-inside">
+          <li>Login Button (styled as DaisyUI primary button)</li>
+          <li>User Information Card (name, email, profile picture)</li>
+          <li>Logout Button (styled as DaisyUI secondary button)</li>
+        </ul>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">5. How to Use</h2>
+        <ol class="list-decimal list-inside">
+          <li>Click the <strong>Login with Google</strong> button.</li>
+          <li>Authorize the app to access your Google account.</li>
+          <li>View your user details displayed on the page.</li>
+          <li>Click the <strong>Logout</strong> button to clear your session and reload the page.</li>
+        </ol>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">6. Technical Notes</h2>
+        <p>Below are some important notes to keep in mind:</p>
+        <ul class="list-disc list-inside">
+          <li>Ensure the Google OAuth credentials are properly configured.</li>
+          <li>Use HTTPS in production to avoid issues with OAuth redirection.</li>
+          <li>Consider using session storage instead of local storage for better security in production.</li>
+        </ul>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">7. Security</h2>
+        <p>For improved security, consider the following measures:</p>
+        <ul class="list-disc list-inside">
+          <li>Use HTTPS to prevent interception of sensitive data.</li>
+          <li>Limit the scope of access requested from Google (e.g., only request profile and email).</li>
+          <li>Use secure cookies instead of localStorage for sensitive information.</li>
+        </ul>
+      </section>
+      
+      <section class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">8. Sample Code</h2>
+        <pre class="bg-neutral text-neutral-content p-4 rounded overflow-auto">
+<code>
+// Extract user data from URL and store in localStorage
+const userData = new URLSearchParams(window.location.search).get('user');
+if (userData) {
+  localStorage.setItem('userData', decodeURIComponent(userData));
+}
 
-    <!-- Tombol login -->
-    <a href="https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/">Login with Google</a>
-
-    <h2>Informasi User</h2>
-    <div id="userInfo"></div>
-
-    <script>
-
-      // Fungsi untuk mengambil query parameter dari URL
-      function getQueryParam(param) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(param);
-      }
-
-      // Cek apakah URL memiliki parameter "user"
-      const userData = getQueryParam("user");
-      if (userData) {
-        try {
-          // Simpan data user di Local Storage
-          localStorage.setItem("userData", decodeURIComponent(userData));
-
-          // Hapus query parameter dari URL
-          const cleanUrl = window.location.origin + window.location.pathname;
-          window.history.replaceState({}, document.title, cleanUrl);
-        } catch (error) {
-          console.error("Error parsing user info:", error);
-        }
-      }
-
-      // Ambil data user dari Local Storage dan tampilkan di halaman
-      const savedUserData = localStorage.getItem("userData");
-      if (savedUserData) {
-        const userInfo = JSON.parse(savedUserData);
-        document.getElementById("userInfo").innerHTML = `
-          <p><strong>Nama:</strong> ${userInfo.name}</p>
-          <p><strong>Email:</strong> ${userInfo.email}</p>
-          <img src="${userInfo.picture}" alt="Profile Picture" style="border-radius: 50%; width: 100px;">
-        `;
-      }
-    </script>
+// Display user information on the page
+const savedUserData = localStorage.getItem('userData');
+if (savedUserData) {
+  const userInfo = JSON.parse(savedUserData);
+  document.getElementById("userInfo").innerHTML = `
+    <p><strong>Name:</strong> ${userInfo.name}</p>
+    <p><strong>Email:</strong> ${userInfo.email}</p>
+    <img src="${userInfo.picture}" alt="Profile Picture">
+  `;
+}
+</code>
+        </pre>
+      </section>
+      
+      <footer class="mt-20 text-center">
+        <p>© 2024 OAuth2 Google Login Documentation</p>
+      </footer>
+    </div>
   </body>
 </html>
