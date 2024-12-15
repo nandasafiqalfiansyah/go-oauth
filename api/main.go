@@ -1,5 +1,7 @@
 package api
 
+//to local you can use main
+
 import (
 	"context"
 	"encoding/json"
@@ -118,6 +120,12 @@ func (a *App) callbackHandler(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, redirectURL)
 }
 
+
+// func main() {
+// 	if err := router.Run(":8000"); err != nil {
+// 		log.Fatal("Failed to start server:", err)
+// 	}
+// }
 
 // func main() {
 // 	if err := router.Run(":8000"); err != nil {
