@@ -46,7 +46,6 @@
           console.error("Error parsing user info:", error);
         }
       }
-
       const savedUserData = localStorage.getItem("userData");
       if (savedUserData) {
         const userInfo = JSON.parse(savedUserData);
@@ -57,7 +56,6 @@
         `;
         document.getElementById("logoutBtn").classList.remove("hidden");
       }
-
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("userData");
         window.location.reload();
