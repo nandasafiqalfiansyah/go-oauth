@@ -10,23 +10,19 @@
   <body class="bg-base-200 text-base-content">
     <div class="container mx-auto p-10">
       <h1 class="text-4xl font-bold text-center mb-10">OAuth2 Google Login - Documentation</h1>
-      
       <section class="mb-10">
         <h2 class="text-2xl font-semibold mb-4">1. Introduction</h2>
         <p>This page provides a working implementation of Google OAuth2 login, logout, and user information display. You can log in using your Google account, view user information, and log out securely.</p>
       </section>
-      
       <section class="mb-10">
         <h2 class="text-2xl font-semibold mb-4">2. Try it Out</h2>
         <a href="https://go-oauth.vercel.app/auth/?url=http://ndav.me/go-oauth/" class="btn btn-primary flex px-6 py-3 rounded-lg shadow w-64">
-          <!-- Logo Google -->
           <img src="https://logodix.com/logo/48131.png" alt="Google logo" class="w-6 h-6 mr-3" />
           <span class="font-semibold ">Login with Google</span>
         </a>
         <div id="userInfo" class="mt-4"></div>
         <button id="logoutBtn" class="btn btn-secondary mt-4 hidden">Logout</button>
       </section>
-      
       <section class="mb-10">
         <h2 class="text-2xl font-semibold mb-4">3. Explanation of the URL</h2>
         <p>The URL <code>https://go-oauth.vercel.app/auth/?url={YOUR URL BASE APP}</code> is used to redirect the user to the OAuth2 authorization flow. Here’s a breakdown of the URL:</p>
@@ -35,18 +31,11 @@
           <li><strong>url={YOUR URL BASE APP}</strong>: This parameter specifies the base URL of your application where the user will be redirected after successful login. Replace <code>{YOUR URL BASE APP}</code> with the actual URL of your app (e.g., <code>https://example.com/dashboard</code>).</li>
         </ul>
       </section>
-      
-      <footer class="mt-20 text-center">
-        <p>© 2024 OAuth2 Google Login Documentation by nanda safiq alfiansyah</p>
-      </footer>
-    </div>
-    
     <script>
       function getQueryParam(param) {
         const params = new URLSearchParams(window.location.search);
         return params.get(param);
       }
-
       const userData = getQueryParam("user");
       if (userData) {
         try {
